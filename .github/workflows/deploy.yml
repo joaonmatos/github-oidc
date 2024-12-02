@@ -5,10 +5,11 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js 20.x
@@ -16,6 +17,12 @@ jobs:
       with:
         node-version: 20.x
         cache: 'npm'
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubOicdBootstrapAppRole
+        aws-region: us-east-1
     - run: npm ci
     - run: npm run build
-
+    - run: npm run cdk -- synth
+    - run: npm run cdk -- deploy --all

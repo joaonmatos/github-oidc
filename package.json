@@ -14,7 +14,6 @@
     "typescript": "5.x"
   },
   "dependencies": {
-    "aws-cdk-github-oidc": "^2.4.1",
     "aws-cdk-lib": "2.171.1",
     "constructs": "^10.4.2"
   }

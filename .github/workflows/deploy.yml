@@ -25,4 +25,4 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm run cdk -- synth
-    - run: npm run cdk -- deploy --all
+    - run: npm run cdk -- deploy --ci --all --require-approval=never

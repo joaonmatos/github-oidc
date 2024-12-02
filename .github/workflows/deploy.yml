@@ -20,7 +20,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@master
       with:
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubOicdBootstrapAppRole
+        role-to-assume: arn:aws:iam::017059319575:role/GitHubOicdBootstrapAppRole
         aws-region: us-east-1
     - run: npm ci
     - run: npm run build

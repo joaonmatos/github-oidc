@@ -1,5 +1,6 @@
 import { Stack, type StackProps } from "aws-cdk-lib";
 import {
+  OpenIdConnectPrincipal,
   OpenIdConnectProvider,
   Policy,
   PolicyDocument,
@@ -35,6 +36,18 @@ export class GithubOidcStack extends Stack {
       roleName: "GitHubOicdBootstrapAppRole",
     });
 
+    this.role.grant(
+      new OpenIdConnectPrincipal(this.provider, {
+        StringLike: {
+          [`${issuer}:sub`]: "repo:joaonmatos/github-oicd:*",
+        },
+        StringEquals: {
+          [`${issuer}:aud`]: "sts.amazonaws.com",
+        },
+      }),
+      "sts:AssumeRoleWithWebIdentity",
+    );
+
     const policyJson = {
       Version: "2012-10-17",
       Statement: [
@@ -61,7 +74,7 @@ export class GithubOidcStack extends Stack {
       ],
     };
 
-    new Policy(this, "CdkRolePolicy", {
+    new Policy(this, "AssumeCDKRolesPolicy", {
       document: PolicyDocument.fromJson(policyJson),
       roles: [this.role],
     });

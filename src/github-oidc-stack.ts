@@ -11,6 +11,7 @@ import type { Construct } from "constructs";
 export class GithubOidcStack extends Stack {
   readonly provider: OpenIdConnectProvider;
   readonly role: Role;
+
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
     const issuer = "token.actions.githubusercontent.com";
@@ -24,7 +25,7 @@ export class GithubOidcStack extends Stack {
     this.role = new Role(this, "BootstrapRole", {
       assumedBy: new OpenIdConnectPrincipal(this.provider, {
         StringLike: {
-          [`${issuer}:sub`]: "repo:joaonmatos/*",
+          [`${issuer}:sub`]: ["repo:joaonmatos/*", "repo:secret-santa-app/*"],
         },
         StringEquals: {
           [`${issuer}:aud`]: "sts.amazonaws.com",

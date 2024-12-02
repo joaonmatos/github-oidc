@@ -19,6 +19,7 @@ export class GithubOidcStack extends Stack {
     this.provider = new OpenIdConnectProvider(this, "GitHubIdentityProvider", {
       url: `https://${issuer}`,
       clientIds: ["sts.amazonaws.com"],
+      thumbprints: ["ffffffffffffffffffffffffffffffffffffffff"],
     });
 
     this.role = new Role(this, "BootstrapRole", {

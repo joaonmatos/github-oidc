@@ -5,7 +5,6 @@ import {
   Policy,
   PolicyDocument,
   Role,
-  WebIdentityPrincipal,
 } from "aws-cdk-lib/aws-iam";
 import type { Construct } from "constructs";
 
@@ -23,31 +22,16 @@ export class GithubOidcStack extends Stack {
     });
 
     this.role = new Role(this, "BootstrapRole", {
-      assumedBy: new WebIdentityPrincipal(
-        this.provider.openIdConnectProviderArn,
-        {
-          StringLike: {
-            [`${issuer}:sub`]: "repo:joaonmatos/github-oicd:*",
-          },
-          StringEquals: {
-            [`${issuer}:aud`]: "sts.amazonaws.com",
-          },
-        },
-      ),
-      roleName: "GitHubOicdBootstrapAppRole",
-    });
-
-    this.role.grant(
-      new OpenIdConnectPrincipal(this.provider, {
+      assumedBy: new OpenIdConnectPrincipal(this.provider, {
         StringLike: {
-          [`${issuer}:sub`]: "repo:joaonmatos/github-oicd:*",
+          [`${issuer}:sub`]: "repo:joaonmatos/*",
         },
         StringEquals: {
           [`${issuer}:aud`]: "sts.amazonaws.com",
         },
       }),
-      "sts:AssumeRoleWithWebIdentity",
-    );
+      roleName: "GitHubOicdBootstrapAppRole",
+    });
 
     const policyJson = {
       Version: "2012-10-17",
